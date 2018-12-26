@@ -20,6 +20,12 @@ namespace sensors
    private:
      Pin data;  
      Data buffer[5];
+
+     bool set2Output();
+     bool set2Input();
+     bool startCommunication();
+     bool waitForInitalBits();
+     bool readDataBits();
      
   };
 }
