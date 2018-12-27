@@ -14,8 +14,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  DHT22::MeasureValues mv = test.getTempAndHumi();
   uint8_t* c = test.getBuffer();
-  Serial.print( test.readSensor() );
+  //Serial.print( test.readSensor() );
   Serial.print( " Buffer[0]: " );
   Serial.print( c[0] );
   Serial.print( " ,Buffer[1]: " );
@@ -27,9 +28,9 @@ void loop() {
   Serial.print( " ,Buffer[4]: " );
   Serial.print( c[4] );
   Serial.print( " ,Temp: " );
-  Serial.print( test.getTemperature() );
+  Serial.print( mv.temperature );
   Serial.print( " ,Humi: " );
-  Serial.println( test.getHumidity() );
+  Serial.println( mv.humidity );
   delay(500);
 }
 

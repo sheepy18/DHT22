@@ -2,6 +2,19 @@
 
 namespace sensors
 {
+  
+
+  DHT22::MeasureValues DHT22::getTempAndHumi()
+  {    
+    uint8_t i = 0;
+    while(  i < 50 && readSensor() != 0)
+    {
+       ++i;
+    }
+    
+    return DHT22::MeasureValues{ getTemperature(), getHumidity() };
+  }
+  
   /*
    * used for computing bits into integer
    */
@@ -123,12 +136,12 @@ namespace sensors
     if( !set2Input() ) return 3;
     if( !waitForInitalBits() ) return 4 ;
     if( !readDataBits() ) return 5;
-    if( isCheckSumValid() ) return 6;
+    if( !isCheckSumValid() ) return 6;
      
     return 0;
   }
-
-  float DHT22::getTemperature()
+  
+  DHT22::Value DHT22::getTemperature()
   {
     float t = 0.f;
     t = buff[2];
@@ -136,7 +149,7 @@ namespace sensors
     return t;
   }
 
-  float DHT22::getHumidity()
+  DHT22::Value DHT22::getHumidity()
   {
     float h = 0.f;
     h = buff[0];
