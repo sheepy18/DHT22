@@ -29,6 +29,7 @@ namespace sensors
      bool waitForInitalBits();
      bool readDataBits();
      void resetBuffer();
+     bool isCheckSumValid();
      
   };
 }

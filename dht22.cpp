@@ -73,6 +73,14 @@ namespace sensors
     buff[0] = buff[1] = buff[2] = buff[3] = buff[4] = 0;
   }
 
+  bool DHT22::isCheckSumValid()
+  {
+    if( buff[4] == ((buff[0] + buff[1] + buff[2] + buff[3]) & 0xFF) )
+      return true;
+
+    return false;
+  }
+
   bool DHT22::readDataBits()
   {    
     unsigned long start = micros();
@@ -98,10 +106,10 @@ namespace sensors
          return false;
       }
       
-      if( micros() - startRX > 60 )
+      if( micros() - startRX > 30 )
       {              
-          //Higher bit first and signed, 6(highest bit exponent) - (i%7)
-          buff[(i / 8)] += exp2( 7 - (i % 8)); 
+          //Higher bit first and signed, 7(highest bit exponent) - (i%8)
+          buff[(i / 8)] += exp2( 7 - (i % 8) ); 
       } 
      }   
      return true; 
@@ -115,6 +123,7 @@ namespace sensors
     if( !set2Input() ) return 3;
     if( !waitForInitalBits() ) return 4 ;
     if( !readDataBits() ) return 5;
+    if( isCheckSumValid() ) return 6;
      
     return 0;
   }
