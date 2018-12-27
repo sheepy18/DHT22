@@ -108,7 +108,7 @@ namespace sensors
       
       if( micros() - startRX > 30 )
       {              
-          //Higher bit first and signed, 7(highest bit exponent) - (i%8)
+          //Higher bit first, 7(highest bit exponent) - (i%8)
           buff[(i / 8)] += exp2( 7 - (i % 8) ); 
       } 
      }   
@@ -142,5 +142,6 @@ namespace sensors
     h = buff[0];
     h += (buff[1] / 10.f);
     return h;
+    //return 2 * h; may be the right solution or a close one, but why?
   }
 }
