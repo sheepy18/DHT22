@@ -5,17 +5,18 @@
 
 namespace sensors
 {
-  class Dht22
+  class DHT22
   {
     using Pin = uint8_t;
     using Data = int8_t;
+    using Error = uint8_t; //0 == success
     
     public:
-       Dht22( Pin dataArg ) : data{ dataArg }{}
+       DHT22( Pin dataArg ) : data{ dataArg }{}
        Pin getDataPin() { return data; }
-       Data* getData() { return buffer; }
+       Data* getBuffer() { return buffer; }
        
-       uint8_t readSensor(); 
+       Error readSensor(); 
   
    private:
      Pin data;  

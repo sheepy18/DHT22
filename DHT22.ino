@@ -3,7 +3,7 @@
 
 using namespace sensors;
 
-Dht22 test{ 14 };
+DHT22 test{ 14 };
 
 void setup() {
   // put your setup code here, to run once:
@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int8_t* c = test.getData();
+  int8_t* c = test.getBuffer();
   Serial.print( test.readSensor() );
   Serial.print( "\tBuffer[0]: " );
   Serial.print( c[0] );
@@ -30,7 +30,7 @@ void loop() {
 }
 
 
-void printDht( Dht22& d )
+void printDht( DHT22& d )
 {
   Serial.print( "DHT22:\tDataPin ");
   Serial.print( d.getDataPin() );

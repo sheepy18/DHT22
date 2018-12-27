@@ -2,7 +2,9 @@
 
 namespace sensors
 {
-
+  /*
+   * used for computing bits into integer
+   */
   uint8_t exp2( uint8_t e )
   {
     uint8_t f = 1;
@@ -15,49 +17,49 @@ namespace sensors
     return f;
   }
 
-  bool Dht22::set2Output()
+  bool DHT22::set2Output()
   {
-   //erstmal datenpin auf Outpu & High setzen
+   //set datapin as output on high voltage
     pinMode( data, OUTPUT );
     digitalWrite( data, HIGH );
     delay(20); 
     return true;
   }
 
-  bool Dht22::startCommunication()
+  bool DHT22::startCommunication()
   {
-    //Mitteilen, dass ich kommunizieren möchte
+    //wait 2 milisec on low voltage as a startsignal 
     digitalWrite( data, LOW );
-    delay(1);
+    delay(2);
     return true;
   }
 
-  bool Dht22::set2Input()
+  bool DHT22::set2Input()
   {
-    //auf input stellen und warten bis gemessen wurde
+    //set datapin on input and wait for measuring ca.20 micro seconds
     pinMode( data, INPUT );
     delayMicroseconds(20);  
     return true;
   }
 
-  bool Dht22::waitForInitalBits()
+  bool DHT22::waitForInitalBits()
   {
-    unsigned long start = micros();
+    //initalise variables for time measuring and for read one bit(=high/low voltage)
+    unsigned long start = micros(); 
     uint8_t rBit = 0;
     
-    //erste 80us startsignal auf LOW
+    //first 80us startsignal on LOW
     rBit = digitalRead( data );
     while( rBit != HIGH )
     {
       rBit = digitalRead( data ); 
-      //Serial.println( rBit );
+      //time measuring to prevent infinte loops if something went wrong
       if( (micros() - start) >= 5000 )
         return false;
     }
     
-    //zweite 80us startsignal auf HIGH
+    //second 80us startsignal on HIGH
     rBit = digitalRead( data );
-    start = micros();
     while( rBit == HIGH )
     {  
       rBit = digitalRead( data );
@@ -66,7 +68,7 @@ namespace sensors
     }
   }
 
-  bool Dht22::readDataBits()
+  bool DHT22::readDataBits()
   {
     buffer[0] = buffer[1] = buffer[2] = buffer[3] = buffer[4] = 0;
     unsigned long start = micros();
@@ -74,8 +76,7 @@ namespace sensors
     uint8_t i = 0;
     uint8_t rBit = 0;
 
-    //start der bit-weisen Datenübertragung
-    start = micros();
+    //start data transition bitwise
     for( i = 1; i <= 40; ++i )
     {
       rBit = digitalRead( data );
@@ -96,11 +97,10 @@ namespace sensors
       if( micros() - startRX > 30 )
       {
         //vorzeichenbehaftet letztes bit entscheidet es
-         if( i % 8 == 7)
-          //buffer[ (i / 8) % 5 ] *= -1;  
-          ;        
-         else
-          //Higher bit first und vorzeichenbehaftet deswegen, 6(höchstes Bit) - (i%7) 
+         //if( i % 8 == 7)
+           //buffer[ (i / 8) % 5 ] *= -1;  
+               
+          //Higher bit first and signed, 6(highest bit exponent) - (i%7)
           buffer[ (i / 8) % 5 ] += exp2( (6) - (i % 7) );   
       } 
      }   
@@ -109,7 +109,7 @@ namespace sensors
 
   
   
-  uint8_t Dht22::readSensor()
+  DHT22::Error DHT22::readSensor()
   {
     if( !set2Output() ) return 1;
     if( !startCommunication() ) return 2;
