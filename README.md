@@ -1,1 +1,1 @@
-# DHT22
+# Weatherstation
