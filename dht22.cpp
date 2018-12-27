@@ -68,12 +68,16 @@ namespace sensors
     }
   }
 
-  bool DHT22::readDataBits()
+  void DHT22::resetBuffer()
   {
-    buffer[0] = buffer[1] = buffer[2] = buffer[3] = buffer[4] = 0;
+    buff[0] = buff[1] = buff[2] = buff[3] = buff[4] = 0;
+  }
+
+  bool DHT22::readDataBits()
+  {    
     unsigned long start = micros();
     unsigned long startRX = micros();
-    uint8_t i = 0;
+    uint8_t i = 0, j = 0;
     uint8_t rBit = 0;
 
     //start data transition bitwise
@@ -89,28 +93,26 @@ namespace sensors
       startRX = micros();
       while( rBit == HIGH )
       {
+        j++;
+        delayMicroseconds(1);
         rBit = digitalRead( data );
         if( micros() - start >= 5000 )
           return false;
       }
       
       if( micros() - startRX > 30 )
-      {
-        //vorzeichenbehaftet letztes bit entscheidet es
-         //if( i % 8 == 7)
-           //buffer[ (i / 8) % 5 ] *= -1;  
-               
+      //if( j > 30 )
+      {              
           //Higher bit first and signed, 6(highest bit exponent) - (i%7)
-          buffer[ (i / 8) % 5 ] += exp2( (6) - (i % 7) );   
+          buff[ (i / 8) ] += exp2( 6 - (i % 7) ); 
       } 
      }   
      return true; 
   }
-
-  
   
   DHT22::Error DHT22::readSensor()
   {
+    resetBuffer();
     if( !set2Output() ) return 1;
     if( !startCommunication() ) return 2;
     if( !set2Input() ) return 3;
@@ -118,5 +120,16 @@ namespace sensors
     if( !readDataBits() ) return 5;
      
     return 0;
+  }
+
+  float DHT22::getTemperature()
+  {
+    float f = 0.f;
+
+    f = buff[2];
+    f += (buff[3] / 10.f);
+    if (buff[2] & 0x80)
+      f *= -1;
+    return f;
   }
 }

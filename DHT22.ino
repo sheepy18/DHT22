@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int8_t* c = test.getBuffer();
+  uint8_t* c = test.getBuffer();
   Serial.print( test.readSensor() );
   Serial.print( "\tBuffer[0]: " );
   Serial.print( c[0] );
@@ -25,6 +25,8 @@ void loop() {
   Serial.print( "\tBuffer[3]: " );
   Serial.print( c[3] );
   Serial.print( "\tBuffer[4]: " );
+  Serial.print( "\tTemp: " );
+  Serial.print( test.getTemperature() );
   Serial.println( c[4] );
   delay(500);
 }
