@@ -16,18 +16,20 @@ void loop() {
   // put your main code here, to run repeatedly:
   uint8_t* c = test.getBuffer();
   Serial.print( test.readSensor() );
-  Serial.print( "\tBuffer[0]: " );
+  Serial.print( " Buffer[0]: " );
   Serial.print( c[0] );
-  Serial.print( "\tBuffer[1]: " );
+  Serial.print( " ,Buffer[1]: " );
   Serial.print( c[1] );
-  Serial.print( "\tBuffer[2]: " );
+  Serial.print( " ,Buffer[2]: " );
   Serial.print( c[2] );
-  Serial.print( "\tBuffer[3]: " );
+  Serial.print( " ,Buffer[3]: " );
   Serial.print( c[3] );
-  Serial.print( "\tBuffer[4]: " );
-  Serial.print( "\tTemp: " );
+  Serial.print( " ,Buffer[4]: " );
+  Serial.print( c[4] );
+  Serial.print( " ,Temp: " );
   Serial.print( test.getTemperature() );
-  Serial.println( c[4] );
+  Serial.print( " ,Humi: " );
+  Serial.println( test.getHumidity() );
   delay(500);
 }
 

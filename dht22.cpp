@@ -77,11 +77,11 @@ namespace sensors
   {    
     unsigned long start = micros();
     unsigned long startRX = micros();
-    uint8_t i = 0, j = 0;
+    uint8_t i = 0;
     uint8_t rBit = 0;
 
     //start data transition bitwise
-    for( i = 1; i <= 40; ++i )
+    for( i = 0; i < 40; ++i )
     {
       rBit = digitalRead( data );
       while( rBit == LOW )
@@ -93,18 +93,15 @@ namespace sensors
       startRX = micros();
       while( rBit == HIGH )
       {
-        j++;
-        delayMicroseconds(1);
-        rBit = digitalRead( data );
-        if( micros() - start >= 5000 )
-          return false;
+       rBit = digitalRead( data );
+       if( micros() - start >= 5000 )
+         return false;
       }
       
-      if( micros() - startRX > 30 )
-      //if( j > 30 )
+      if( micros() - startRX > 60 )
       {              
           //Higher bit first and signed, 6(highest bit exponent) - (i%7)
-          buff[ (i / 8) ] += exp2( 6 - (i % 7) ); 
+          buff[(i / 8)] += exp2( 7 - (i % 8)); 
       } 
      }   
      return true; 
@@ -124,12 +121,17 @@ namespace sensors
 
   float DHT22::getTemperature()
   {
-    float f = 0.f;
+    float t = 0.f;
+    t = buff[2];
+    t += (buff[3] / 10.f);
+    return t;
+  }
 
-    f = buff[2];
-    f += (buff[3] / 10.f);
-    if (buff[2] & 0x80)
-      f *= -1;
-    return f;
+  float DHT22::getHumidity()
+  {
+    float h = 0.f;
+    h = buff[0];
+    h += (buff[1] / 10.f);
+    return h;
   }
 }

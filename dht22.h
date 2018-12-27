@@ -17,6 +17,7 @@ namespace sensors
        Data* getBuffer() { return buff; }             
        Error readSensor(); 
        float getTemperature();
+       float getHumidity();
   
    private:
      Pin data;  
