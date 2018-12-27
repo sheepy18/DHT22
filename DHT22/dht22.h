@@ -7,10 +7,10 @@ namespace sensors
 {
   class DHT22
   {
-    using Value = float;
-    using Pin = uint8_t;
+    using Value = const float;
+    using Pin = const uint8_t;
     using Data = uint8_t;
-    using Error = uint8_t; 
+    using Error = const uint8_t; 
      /*
      * Errorcodes:
      * 0 == success
