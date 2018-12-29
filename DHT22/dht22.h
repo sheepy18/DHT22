@@ -29,13 +29,17 @@ namespace sensors
           DHT22::Value humidity;    
        };
     
-       DHT22( Pin dataArg ) : data{ dataArg }{}
+       DHT22( Pin dataArg ) : data{ dataArg }{ readedBits[40] = '\0'; }
        Pin getDataPin() { return data; }
        Data* getBuffer() { return buff; }             
        Error readSensor(); 
        Value getTemperature();
        Value getHumidity();
        MeasureValues getTempAndHumi();
+
+       Value getHumidity2();
+
+       char readedBits[41];
        
   
    private:
@@ -49,6 +53,8 @@ namespace sensors
      bool readDataBits();
      void resetBuffer();
      bool isCheckSumValid();
+
+     bool readDataBitsAlternative();
      
   };
 }

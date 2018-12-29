@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+DHT22/DHT.cpp
+DHT22/DHT.h

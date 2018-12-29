@@ -1,37 +1,40 @@
 
 #include "dht22.h"
+#include "DHT.h"
 
 using namespace sensors;
 
-DHT22 test{ 14 };
+DHT22 test{ 0 };
+DHT test2( 0, 22, 20 );
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin( 115200 );
-  printDht( test );
   
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+ 
+  static int i = 0;
+  if( ++i % 2 == 0)
+  {
   DHT22::MeasureValues mv = test.getTempAndHumi();
-  uint8_t* c = test.getBuffer();
-  //Serial.print( test.readSensor() );
-  Serial.print( " Buffer[0]: " );
-  Serial.print( c[0] );
-  Serial.print( " ,Buffer[1]: " );
-  Serial.print( c[1] );
-  Serial.print( " ,Buffer[2]: " );
-  Serial.print( c[2] );
-  Serial.print( " ,Buffer[3]: " );
-  Serial.print( c[3] );
-  Serial.print( " ,Buffer[4]: " );
-  Serial.print( c[4] );
-  Serial.print( " ,Temp: " );
+  Serial.print( "My: Temp=" );
   Serial.print( mv.temperature );
-  Serial.print( " ,Humi: " );
+  Serial.print( " ,Humi=" );
   Serial.println( mv.humidity );
-  delay(500);
+  }
+  else 
+  {
+  test2.begin();
+  Serial.print("Serious: Temp=");
+  Serial.print(test2.readTemperature( false ));
+  Serial.print(" ,Humi=");
+  Serial.println(test2.readHumidity());
+  
+  }
+  delay(2000);
 }
 
 

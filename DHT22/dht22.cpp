@@ -7,7 +7,7 @@ namespace sensors
   DHT22::MeasureValues DHT22::getTempAndHumi()
   {    
     uint8_t i = 0;
-    while(  i < 50 && readSensor() != 0)
+    while(  i < 255 && readSensor() != 0)
     {
        ++i;
     }
@@ -44,6 +44,8 @@ namespace sensors
     //wait 2 milisec on low voltage as a startsignal 
     digitalWrite( data, LOW );
     delay(2);
+    noInterrupts();
+    digitalWrite( data , HIGH);
     return true;
   }
 
@@ -94,6 +96,38 @@ namespace sensors
     return false;
   }
 
+  bool DHT22::readDataBitsAlternative()
+  {
+    uint8_t j = 0;
+    uint8_t rBit = 0;
+
+    for( uint8_t i = 0; i < 40; ++i)
+    {
+      j = 0;
+      while( digitalRead( data ) == LOW)
+      {
+        delayMicroseconds(1);
+      }
+      while( digitalRead( data ) == HIGH )
+      {
+        ++j;
+        delayMicroseconds(1);
+      }
+
+      if( j > 30 )
+      {
+        buff[(i / 8)] += exp2( 7 - (i % 8) ); 
+        readedBits[i] = '1';
+      }
+      else
+      {
+         readedBits[i] = '0';
+      }
+    }
+
+    return true;
+  }
+
   bool DHT22::readDataBits()
   {    
     unsigned long start = micros();
@@ -119,11 +153,14 @@ namespace sensors
          return false;
       }
       
-      if( micros() - startRX > 30 )
+      if( micros() - startRX > 40 )
       {              
           //Higher bit first, 7(highest bit exponent) - (i%8)
           buff[(i / 8)] += exp2( 7 - (i % 8) ); 
-      } 
+          readedBits[i] = '1';
+      } else {
+        readedBits[i] = '0';
+      }
      }   
      return true; 
   }
@@ -136,8 +173,8 @@ namespace sensors
     if( !set2Input() ) return 3;
     if( !waitForInitalBits() ) return 4 ;
     if( !readDataBits() ) return 5;
-    if( !isCheckSumValid() ) return 6;
-     
+   // if( !readDataBitsAlternative() ) return 5;    
+    if( !isCheckSumValid() ) return 6;     
     return 0;
   }
   
@@ -149,12 +186,27 @@ namespace sensors
     return t;
   }
 
+  /* Old version
   DHT22::Value DHT22::getHumidity()
   {
-    float h = 0.f;
+    float h = 0.f;    
     h = buff[0];
     h += (buff[1] / 10.f);
-    return h;
-    //return 2 * h; may be the right solution or a close one, but why?
+    h *= 2;
+    h += 1;
+
+    //return h;
+    return h; //may be the right solution or a close one, but why?
+  }
+  */
+
+  DHT22::Value DHT22::getHumidity()
+  {
+    float h2 = 0.f;
+    h2 = buff[0];
+    h2 *= 256;
+    h2 += buff[1];
+    h2 /= 10;
+    return h2;
   }
 }
