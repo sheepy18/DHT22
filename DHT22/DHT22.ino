@@ -2,45 +2,53 @@
 #include "dht22.h"
 #include "DHT.h"
 
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266HTTPClient.h>
+
 using namespace sensors;
 
 DHT22 test{ 0 };
 DHT test2( 0, 22, 20 );
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin( 115200 );
-  
-}
 
-void loop() {
-  // put your main code here, to run repeatedly:
- 
-  static int i = 0;
-  if( ++i % 2 == 0)
-  {
+void myVersion()
+{
   DHT22::MeasureValues mv = test.getTempAndHumi();
   Serial.print( "My: Temp=" );
   Serial.print( mv.temperature );
   Serial.print( " ,Humi=" );
   Serial.println( mv.humidity );
-  }
-  else 
-  {
+  delay(1000);
+}
+
+void adafruitVersion()
+{
   test2.begin();
   Serial.print("Serious: Temp=");
   Serial.print(test2.readTemperature( false ));
   Serial.print(" ,Humi=");
   Serial.println(test2.readHumidity());
-  
-  }
-  delay(2000);
 }
 
 
-void printDht( DHT22& d )
-{
-  Serial.print( "DHT22:\tDataPin ");
-  Serial.print( d.getDataPin() );
-  Serial.println( " | " );
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin( 115200 );
+  Serial.setTimeout(2000);
+  
+  // Wait for serial to initialize.
+  while (!Serial) { }
+  
+  Serial.println("I'm awake.");
+  myVersion();
+  adafruitV();
+  Serial.println("Going into deep sleep for 5 seconds");
+  system_deep_sleep_set_option(1);
+  system_deep_sleep_instant(5000*1000);
+  //ESP.deepSleep(5e6); // 20e6 is 5 microseconds
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
 }
