@@ -7,7 +7,7 @@ namespace sensors
   DHT22::MeasureValues DHT22::getTempAndHumi()
   {    
     uint8_t i = 0;
-    while(  i < 255 && readSensor() != 0)
+    while(  i < 10 && readSensor() != 0)
     {
        ++i;
     }
@@ -43,7 +43,7 @@ namespace sensors
   {
     //wait 2 milisec on low voltage as a startsignal 
     digitalWrite( data, LOW );
-    delay(2);
+    delay(18);
     noInterrupts();
     digitalWrite( data , HIGH);
     return true;
@@ -81,6 +81,7 @@ namespace sensors
       if( (micros() - start) >= 5000 )
         return false;
     }
+    return true;
   }
 
   void DHT22::resetBuffer()
@@ -186,14 +187,14 @@ namespace sensors
     return t;
   }
 
-  /* Old version
+  /* old version
   DHT22::Value DHT22::getHumidity()
   {
     float h = 0.f;    
     h = buff[0];
     h += (buff[1] / 10.f);
-    h *= 2;
-    h += 1;
+   // h *= 2;
+    //h += 1;
 
     //return h;
     return h; //may be the right solution or a close one, but why?
@@ -209,4 +210,5 @@ namespace sensors
     h2 /= 10;
     return h2;
   }
+  
 }

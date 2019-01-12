@@ -42,11 +42,11 @@ void setup() {
   
   Serial.println("I'm awake.");
   myVersion();
-  adafruitV();
-  Serial.println("Going into deep sleep for 5 seconds");
+  adafruitVersion();
+  Serial.println("Going into deep sleep for 10 minutes");
   system_deep_sleep_set_option(1);
-  system_deep_sleep_instant(5000*1000);
-  //ESP.deepSleep(5e6); // 20e6 is 5 microseconds
+  system_deep_sleep_instant(60000*1000*10); //10 minutes
+  //ESP.deepSleep(5e6); // 20e6 is 5 seconds
 }
 
 void loop() {

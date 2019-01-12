@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS data;
+CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, temperatur REAL, humidity REAL, illumination REAL);
+
+SELECT timestamp, temperatur, humidity, illumination FROM data;
+
+SELECT name FROM sqlite_master WHERE type='table';
