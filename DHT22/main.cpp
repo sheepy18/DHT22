@@ -34,19 +34,27 @@ void adafruitVersion()
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin( 115200 );
+  unsigned long measureTime = micros();
+  Serial.begin( 9600 );
   Serial.setTimeout(2000);
   
   // Wait for serial to initialize.
   while (!Serial) { }
   
-  Serial.println("I'm awake.");
+  Serial.println("\nI'm awake.");
+
   myVersion();
   adafruitVersion();
+  
   Serial.println("Going into deep sleep for 10 minutes");
+
+  measureTime = micros() - measureTime;
+  Serial.printf("measureTime: %ld",measureTime);
+
+  //Deep sleep methods from user_interface.h
   system_deep_sleep_set_option(1);
-  system_deep_sleep_instant(60000*1000*10); //10 minutes
-  //ESP.deepSleep(5e6); // 20e6 is 5 seconds
+  //system_deep_sleep_instant( (60000*1000*10) - measureTime ); //10 minutes
+  system_deep_sleep_instant( (10000*1000) - measureTime ); //10 sec
 }
 
 void loop() {
