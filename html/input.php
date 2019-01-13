@@ -52,17 +52,14 @@
                                 //echo 'CLOSE Database\n';
                                 $db->close();
                         }
-                        else if( isset($_POST['DhtError']) && $_POST['tslError'] ) 
+                        else if( isset($_POST['DhtError']) && isset($_POST['tslError']) ) 
                         {       
-                                $es_error = date("F d, Y h:i:s A", time());
-                                $esp_error."\n";
-                                $esp_error.filter_input(INPUT_POST,'DhtError',FILTER_SANITIZE_STRING);
-                                $esp_error."\n";
-                                $esp_error.filter_input(INPUT_POST,'tslError',FILTER_SANITIZE_STRING);
-                                $esp_error."\n";
+                                $esp_error = date("F d, Y h:i:s A", time())."\t";
+                                $esp_error = $esp_error.filter_input(INPUT_POST,'DhtError',FILTER_SANITIZE_STRING)."\t";
+                                $esp_error = $esp_error.filter_input(INPUT_POST,'tslError',FILTER_SANITIZE_STRING);
 
-                                $filename = 'log_error.txt';
-                                file_put_contents($filename, $esp_error, FILE_APPEND | LOCK_EX);
+                                $filename = '/var/www/html/log_error.txt';
+                                file_put_contents($filename, $esp_error."\n", FILE_APPEND | LOCK_EX);
                         }
                         else{                                
                                 echo 'No POST Data received\n';
