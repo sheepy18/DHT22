@@ -133,6 +133,8 @@ void sendWeatherData()
       data = String("authentification=") + auth + "&DhtError=" + dht.getErrorMsg() + "&tslError=" + tsl2561.getErrorMsg();
     }
     
+    data = String("authentification=") + auth + "&DhtError=" + "TestDHT" + "&tslError=" + "TestTSL";
+
     Serial.println(data);
     int httpCode = http.POST(data);
     

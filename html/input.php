@@ -61,7 +61,7 @@
                                 $esp_error.filter_input(INPUT_POST,'tslError',FILTER_SANITIZE_STRING);
                                 $esp_error."\n";
 
-                                $filename = './log_error.txt';
+                                $filename = 'log_error.txt';
                                 file_put_contents($filename, $esp_error, FILE_APPEND | LOCK_EX);
                         }
                         else{                                
