@@ -113,11 +113,11 @@ function requestWeatherData() {
 
                         
                 } else {
-                        $startDate = date('Y-m-d');
+                        $startDate = '1971-01-01';
                         $startTime = '00:00:00';
                
-                        $endDate = date('Y-m-d');
-                        $endTime = '23:59:59';
+                        $endDate = '1971-01-01';
+                        $endTime = '00:00:00';
                        
                 }
                 echo "url='weatherdata.php?startDate=".$startDate."&startTime=".$startTime."&endDate=".$endDate."&endTime=".$endTime."';";
