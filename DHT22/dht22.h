@@ -1,7 +1,7 @@
 #ifndef DHT22_H
 #define DHT22_H
 
-#include "Arduino.h";
+#include "Arduino.h"
 
 namespace sensors
 {
@@ -38,6 +38,7 @@ namespace sensors
        MeasureValues getTempAndHumi();
 
        Value getHumidity2();
+       const char* getErrorMsg(){ return err; }
 
        char readedBits[41];
        
@@ -45,6 +46,7 @@ namespace sensors
    private:
      Pin data;  
      Data buff[5];
+     char* err;
 
      bool set2Output();
      bool set2Input();

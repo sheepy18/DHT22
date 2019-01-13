@@ -1,4 +1,4 @@
-#include "dht22.h";
+#include "dht22.h"
 
 namespace sensors
 {
@@ -7,10 +7,43 @@ namespace sensors
   DHT22::MeasureValues DHT22::getTempAndHumi()
   {    
     uint8_t i = 0;
-    while(  i < 10 && readSensor() != 0)
+    DHT22::Error e = readSensor();
+    while(  i < 5 && e != 0)
     {
+       delay(500);
        ++i;
+       e = readSensor();
     }
+
+    if( !e )
+    {
+      switch(e)
+      {
+        case 1:
+          err = "Error DHT22: Couldn´t set pin to output";
+          break;
+        case 2:
+          err = "Error DHT22: Couldn´t start communication";
+          break;
+        case 3:
+          err = "Error DHT22: Couldn´t set pin to input";
+          break;
+        case 4:
+          err = "Error DHT22: Couldn´t receive the startbits";
+          break;
+        case 5:
+          err = "Error DHT22: Couldn´t receive data bits";
+          break;
+        case 6:
+          err = "Error DHT22: Detected invalid checksum";
+          break;        
+        default:
+          err = "Error DHT22: Something went wrong! Couldn´t receive any data";
+          break;
+      }
+      return DHT22::MeasureValues{ 0, 0};
+    }
+    
     
     return DHT22::MeasureValues{ getTemperature(), getHumidity() };
   }
