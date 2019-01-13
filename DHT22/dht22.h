@@ -46,7 +46,7 @@ namespace sensors
    private:
      Pin data;  
      Data buff[5];
-     char* err;
+     char* err = "";
 
      bool set2Output();
      bool set2Input();
