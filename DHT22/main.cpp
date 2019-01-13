@@ -1,7 +1,3 @@
-
-#include "dht22.h"
-#include "DHT.h"
-
 //Global
 #include <Arduino.h>
 //END Global
@@ -12,17 +8,9 @@
 #include <ESP8266HTTPClient.h>
 //END ESP8266
 
-//DHT
-#include "dht22.h"
-//END DHT
+#include <dht22.h>
+#include <TSL256x.h>
 
-//TSL2561
-//#include <Wire.h>
-//#include "Adafruit_Sensor.h"
-//#include "Adafruit_TSL2561_U.h"
-//END TSL2561
-
-//#define SSID "UPC7603911"
 #define SSID "NameOfNetwork"
 #define SECURITY_KEY "AardvarkBadgerHedgehog"
 
@@ -33,6 +21,11 @@
 #define DHTTYPE 22
 #define DHTTHRESHHOLD 20 //24
 
+#define SDA 4//D2
+#define SCL 5//D1
+
+#define ADDRESS 0x39//TSL I2C Address
+
 using namespace sensors;
 
 float humidity;
@@ -42,30 +35,7 @@ int hasReadData;
 
 ESP8266WiFiMulti WiFiMulti;
 DHT22 dht(DHTPIN);
-//Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 12345);
-
-DHT22 test{ 0 };
-DHT test2( 0, 22, 20 );
-
-
-void myVersion()
-{
-  DHT22::MeasureValues mv = test.getTempAndHumi();
-  Serial.print( "My: Temp=" );
-  Serial.print( mv.temperature );
-  Serial.print( " ,Humi=" );
-  Serial.println( mv.humidity );
-  delay(1000);
-}
-
-void adafruitVersion()
-{
-  test2.begin();
-  Serial.print("Serious: Temp=");
-  Serial.print(test2.readTemperature( false ));
-  Serial.print(" ,Humi=");
-  Serial.println(test2.readHumidity());
-}
+TSL256x tsl2561(ADDRESS, SDA, SCL);
 
 
 void setupWiFi()
@@ -82,6 +52,7 @@ void setupWiFi()
   Serial.println("DONE  ESP");
 }
 
+
 void setupDHT()
 {
   Serial.println("Setup DHT");
@@ -90,40 +61,25 @@ void setupDHT()
   Serial.println("Done  DHT");
 }
 
-void configureSensor(void)
-{
-  /* You can also manually set the gain or enable auto-gain support */
-  //tsl.setGain(TSL2561_GAIN_1X);      /* No gain ... use in bright light to avoid sensor saturation */
-  //tsl.setGain(TSL2561_GAIN_16X);     /* 16x gain ... use in low light to boost sensitivity */
-  //tsl.enableAutoRange(true);            /* Auto-gain ... switches automatically between 1x and 16x */
-  
-  /* Changing the integration time gives you better sensor resolution (402ms = 16-bit data) */
- // tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_13MS);      /* fast but low resolution */
-  // tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_101MS);  /* medium resolution and speed   */
-  // tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_402MS);  /* 16-bit data but slowest conversions */
 
-  /* Update these values depending on what you've set above! */  
-  /*Serial.println("------------------------------------");
-  Serial.print  ("Gain:         "); Serial.println("Auto");
-  Serial.print  ("Timing:       "); Serial.println("13 ms");
-  Serial.println("------------------------------------");*/
-}
-/*
 void setupTSL()
 {
   Serial.println("SETUP TSL");
   illumination = 0.0f;
-  if(!tsl.begin())
+  if(tsl2561.init())
   {
-    Serial.println("ERROR No TSL2561 detected!");
+    Serial.printf("Part Number = %d\n", tsl2561.getPartNumber());
+    Serial.printf("Revision Number = %d\n", tsl2561.getRevisionNumber());
+    Serial.printf("Sensor Name: %s\n", tsl2561.getDeviceName());
+    Serial.printf("Package Name: %s\n", tsl2561.getPackageName());
   }
   else
   {
-    configureSensor();
+    Serial.printf("Error Message: %s\n", tsl2561.getErrorMsg());
   }
   Serial.println("DONE  TSL");
 }
-*/
+
 
 void readWeatherData()
 {
@@ -131,16 +87,19 @@ void readWeatherData()
   DHT22::MeasureValues mv = dht.getTempAndHumi();
   humidity = mv.humidity;
   temperatur = mv.temperature;
-  /*if (isnan(humidity) || isnan(temperatur)) {
-    Serial.println("DHT: Failed to read from sensor!");
-    hasReadData = 0;
-    return;
+
+  //illumination
+  if(tsl2561.turnOn()) {
+    if(!tsl2561.getLux(illumination))
+    {
+      hasReadData = 0;
+    }
+    else
+    {
+      hasReadData = 1;
+    }
   }
-  else
-  {
-    hasReadData = 1;
-  }*/
-  //readLightData();
+  tsl2561.turnOff();
 }
 
 void sendWeatherData()
@@ -155,15 +114,26 @@ void sendWeatherData()
     delay(3333);
     status = WiFiMulti.run();
   }
+  
   if (status == WL_CONNECTED)
   {
     HTTPClient http;
+    String data;
     
-    http.begin(URI);//URI
+    http.begin(URI);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     
     Serial.println("[HTTP] POST Request");
-    String data = String("authentification=") + auth + "&temperatur=" + temperatur + "&humidity=" + humidity + "&illumination=" + illumination;
+    if(hasReadData == 1)
+    {
+      data = String("authentification=") + auth + "&temperatur=" + temperatur + "&humidity=" + humidity + "&illumination=" + illumination;  
+    }
+    else
+    {
+      data = String("authentification=") + auth + "&DhtError=" + dht.getErrorMsg() + "&tslError=" + tsl2561.getErrorMsg();
+    }
+    
+    Serial.println(data);
     int httpCode = http.POST(data);
     
     if (httpCode > 0) {
@@ -182,9 +152,7 @@ void sendWeatherData()
 }
 
 
-
 void setup() {
-  // put your setup code here, to run once:
   unsigned long measureTime = micros();
   Serial.begin( 9600 );
   Serial.setTimeout(2000);
@@ -195,25 +163,25 @@ void setup() {
   Serial.println("\nI'm awake.");
   setupWiFi();
   setupDHT();
-  //setupTSL();
+  setupTSL();
   hasReadData = 0;
 
   readWeatherData();
-  sendWeatherData();
+  if(hasReadData == 1)
+  {
+    sendWeatherData();  
+  }
+  
   
   Serial.println("Going into deep sleep for 10 minutes");
   measureTime = micros() - measureTime;
-  Serial.printf("measureTime: %ld",measureTime);
+  Serial.printf("measureTime: %ld", measureTime);
 
   //Deep sleep methods from user_interface.h
-  system_deep_sleep_set_option(1);
-  system_deep_sleep_instant( (60000*1000*10) - measureTime ); //10 minutes
+  //system_deep_sleep_set_option(1);
+  //system_deep_sleep_instant( (60000*1000*10) - measureTime ); //10 minutes
   //system_deep_sleep_instant( (10000*1000) - measureTime ); //10 sec
+  ESP.deepSleep( (10000*1000) - measureTime);
 }
 
-
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop() { }

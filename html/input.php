@@ -11,7 +11,6 @@
 
                         if(isset($_POST['temperatur']) && isset($_POST['humidity']) && isset($_POST['illumination']) )
                         {
-                                date_default_timezone_set("Germany/Berlin");
                                 //$timestamp = date('Y-m-d H:i:sa');
                                 $temperatur = round(filter_input(INPUT_POST,'temperatur',FILTER_SANITIZE_STRING),2);
                                 $humidity = round(filter_input(INPUT_POST,'humidity',FILTER_SANITIZE_STRING), 2);
@@ -55,14 +54,17 @@
                         }
                         else if( isset($_POST['DhtError']) && $_POST['tslError'] ) 
                         {       
-                                $es_error = date("F d, Y h:i:s A", time() );
+                                $es_error = date("F d, Y h:i:s A", time());
                                 $esp_error."\n";
                                 $esp_error.filter_input(INPUT_POST,'DhtError',FILTER_SANITIZE_STRING);
                                 $esp_error."\n";
-                                $es_error.filter_input(INPUT_POST,'tslError',FILTER_SANITIZE_STRING);
+                                $esp_error.filter_input(INPUT_POST,'tslError',FILTER_SANITIZE_STRING);
+                                $esp_error."\n";
+
                                 $filename = './log_error.txt';
                                 file_put_contents($filename, $esp_error, FILE_APPEND | LOCK_EX);
-
+                        }
+                        else{                                
                                 echo 'No POST Data received\n';
                                 echo 'var_dump(_POST) = [\n';
                                 var_dump($_POST);

@@ -10,7 +10,7 @@ namespace sensors
     using Value = const float;
     using Pin = const uint8_t;
     using Data = uint8_t;
-    using Error = const uint8_t; 
+    using Error = uint8_t; 
      /*
      * Errorcodes:
      * 0 == success
@@ -27,6 +27,7 @@ namespace sensors
        {
           DHT22::Value temperature;
           DHT22::Value humidity;    
+          bool success;
        };
     
        DHT22( Pin dataArg ) : data{ dataArg }{ readedBits[40] = '\0'; }

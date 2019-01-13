@@ -8,11 +8,9 @@ namespace sensors
   {    
     uint8_t i = 0;
     DHT22::Error e = readSensor();
-    while(  i < 5 && e != 0)
+     while(  i < 255 && readSensor() != 0)
     {
-       delay(500);
        ++i;
-       e = readSensor();
     }
 
     if( !e )
@@ -41,11 +39,11 @@ namespace sensors
           err = "Error DHT22: Something went wrong! Couldn´t receive any data";
           break;
       }
-      return DHT22::MeasureValues{ 0, 0};
+      return DHT22::MeasureValues{ 0, 0, false};
     }
     
     
-    return DHT22::MeasureValues{ getTemperature(), getHumidity() };
+    return DHT22::MeasureValues{ getTemperature(), getHumidity(),true };
   }
   
   /*
@@ -76,7 +74,7 @@ namespace sensors
   {
     //wait 2 milisec on low voltage as a startsignal 
     digitalWrite( data, LOW );
-    delay(18);
+    delay(1);
     noInterrupts();
     digitalWrite( data , HIGH);
     return true;
