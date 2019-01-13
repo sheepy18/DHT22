@@ -1,5 +1,5 @@
 <?php
-        $dbs_path = $_SERVER['DOCUMENT_ROOT'] . "/../../dbs/sensordata.db";
+        $dbs_path = $_SERVER['DOCUMENT_ROOT'] . "/../../dbs/weather.sqlite";
         $db = new SQLite3($dbs_path,SQLITE3_OPEN_READWRITE);
 
         $param = 'all';

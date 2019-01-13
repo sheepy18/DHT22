@@ -1,5 +1,5 @@
 <?php
-        $dbs_path = $_SERVER['DOCUMENT_ROOT'] . "/../../dbs/sensordata.db";
+        $dbs_path = $_SERVER['DOCUMENT_ROOT'] . "/../../dbs/weather.sqlite";
         $dbs_auth = "YouShallPass";
 
         if(isset($_POST['authentification']))

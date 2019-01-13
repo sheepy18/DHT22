@@ -20,7 +20,7 @@ if(window.Chart) {
 <table>
          <td> 
                 <tr> <a href="index.php"> Home </a> | </tr>
-                <tr> <a href="uebersicht.php"> Übersicht</a> |  </tr>
+                <tr> <a href="queue.php"> Übersicht</a> |  </tr>
                 <tr> <a href="history.php"> Historie </a> </tr>
                 </td>
         </table>
