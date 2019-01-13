@@ -6,14 +6,9 @@ namespace sensors
 
   DHT22::MeasureValues DHT22::getTempAndHumi()
   {    
-    uint8_t i = 0;
     DHT22::Error e = readSensor();
-     while(  i < 255 && readSensor() != 0)
-    {
-       ++i;
-    }
-
-    if( !e )
+    
+    if( e )
     {
       switch(e)
       {

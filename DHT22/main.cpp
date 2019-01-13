@@ -172,16 +172,16 @@ void setup() {
     sendWeatherData();  
   }
   
-  
+  Serial.println(dht.getErrorMsg());
   Serial.println("Going into deep sleep for 10 minutes");
   measureTime = micros() - measureTime;
   Serial.printf("measureTime: %ld", measureTime);
 
   //Deep sleep methods from user_interface.h
-  //system_deep_sleep_set_option(1);
+  system_deep_sleep_set_option(1);
   //system_deep_sleep_instant( (60000*1000*10) - measureTime ); //10 minutes
-  //system_deep_sleep_instant( (10000*1000) - measureTime ); //10 sec
-  ESP.deepSleep( (10000*1000) - measureTime);
+  system_deep_sleep_instant( (10000*1000) ); //10 sec
+  //ESP.deepSleep( (10000*1000) - measureTime);
 }
 
 void loop() { }
