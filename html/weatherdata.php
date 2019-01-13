@@ -13,6 +13,8 @@
 
                  $end = filter_input(INPUT_GET,'endDate',FILTER_SANITIZE_STRING)." ";
                  $end = $end.filter_input(INPUT_GET,'endTime',FILTER_SANITIZE_STRING);
+        } else if( isset($_GET['lastData']) ) {
+                $param = "lastData";
         }
 
         if($db)
@@ -21,7 +23,9 @@
                         if( $param == 'all'){
                                 $sql = "SELECT timestamp, temperatur, humidity, illumination FROM data";
                                 
-                        }                                
+                        }  else if($param == "lastData")  {
+                                $sql = "SELECT timestamp, temperatur, humidity, illumination FROM data WHERE id = ( SELECT max(id) FROM data )";
+                        }                          
                         else{
                                 $sql = 'SELECT timestamp, temperatur, humidity, illumination FROM data where timestamp >='."'".$start."'".' AND timestamp <='."'".$end."'";
                                 

@@ -17,6 +17,13 @@ if(window.Chart) {
 <head>
         <title>Weather Information</title>
 </head>
+<table>
+         <td> 
+                <tr> <a href="index.php"> Home </a> | </tr>
+                <tr> <a href="uebersicht.php"> Übersicht</a> |  </tr>
+                <tr> <a href="history.php"> Historie </a> </tr>
+                </td>
+        </table>
 <canvas id="TempChart"></canvas>
 <div id="Test"></div>
 
@@ -132,7 +139,7 @@ function requestWeatherData() {
         http.onreadystatechange = function() {
                 if(this.readyState == 4 && this.status == 200) {
                         const weatherDataArray = JSON.parse(http.responseText);
-                        //console.log(weatherDataArray);
+                        console.log(weatherDataArray);
                         chart.data.labels.length = 0;
                         chart.data.datasets[0].data.length = 0;
                         chart.data.datasets[1].data.length = 0;
