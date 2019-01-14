@@ -24,7 +24,11 @@ if(window.Chart) {
                 <tr> <a href="history.php"> Historie </a> </tr>
                 </td>
         </table>
+
+
 <canvas id="TempChart"></canvas>
+<canvas id="HumiChart"></canvas>
+<canvas id="IlluChart"></canvas>
 <div id="Test"></div>
 
 <form action="/history.php" method="get">
@@ -39,9 +43,10 @@ if(window.Chart) {
 </form> 
 </html>
 <script>
-const divTest = document.getElementById('Test');
 const tempCtx = document.getElementById('TempChart').getContext('2d');
-const chart = new Chart(tempCtx, {
+const humiCtx = document.getElementById('HumiChart').getContext('2d');
+const illuCtx = document.getElementById('IlluChart').getContext('2d');
+const tempChart = new Chart(tempCtx, {
         // The type of chart we want to create
         type: 'line',
 
@@ -55,25 +60,51 @@ const chart = new Chart(tempCtx, {
                         borderColor: 'rgb(255, 0, 0)',
                         fill: false,
                         data: [/*5,20,8,-7,0,5*/]
-                },
-                {
-                        label: "Humidity",
-                        backgroundColor: 'rgb(0, 0, 255)',
-                        borderColor: 'rgb(0, 0, 255)',
-                        fill: false,
-                        data: [/*5,20,8,-7,0,5*/]
-                },
-                {
-                        label: "Illumination",
-                        backgroundColor: 'rgb(0, 255, 0)',
-                        borderColor: 'rgb(0, 255, 0)',
-                        fill: false,
-                        data: [/*5,20,8,-7,0,5*/]
                 }
                 ]
         },
         // Configuration options go here
         options: {}
+});
+const humiChart = new Chart(humiCtx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "Humidity",
+                backgroundColor: 'rgb(0, 0, 255)',
+                borderColor: 'rgb(0, 0, 255)',
+                fill: false,
+                data: [/*5,20,8,-7,0,5*/]
+            }
+        ]
+    },
+    // Configuration options go here
+    options: {}
+});
+const illuChart = new Chart(illuCtx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "Illumination",
+                backgroundColor: 'rgb(0, 255, 0)',
+                borderColor: 'rgb(0, 255, 0)',
+                fill: false,
+                data: [/*5,20,8,-7,0,5*/]
+            }
+        ]
+    },
+    // Configuration options go here
+    options: {}
 });
 requestWeatherData();
 setInterval( function() { requestWeatherData(); }, 30000);
@@ -140,15 +171,27 @@ function requestWeatherData() {
                 if(this.readyState == 4 && this.status == 200) {
                         const weatherDataArray = JSON.parse(http.responseText);
                         console.log(weatherDataArray);
-                        chart.data.labels.length = 0;
-                        chart.data.datasets[0].data.length = 0;
-                        chart.data.datasets[1].data.length = 0;
+                        tempChart.data.labels.length = 0;
+                        tempChart.data.datasets[0].data.length = 0;
+
+                        humiChart.data.labels.length = 0;
+                        humiChart.data.datasets[0].data.length = 0;
+
+                        illuChart.data.labels.length = 0;
+                        illuChart.data.datasets[0].data.length = 0;
+
                         weatherDataArray.forEach(function(row) {
-                                chart.data.labels.push(row.timestamp);
-                                chart.data.datasets[0].data.push(row.temperatur);
-                                chart.data.datasets[1].data.push(row.humidity);
-                                chart.data.datasets[2].data.push(row.illumination);
-                                chart.update(0);
+                                tempChart.data.labels.push(row.timestamp);
+                                humiChart.data.labels.push(row.timestamp);
+                                illuChart.data.labels.push(row.timestamp);
+
+                                tempChart.data.datasets[0].data.push(row.temperatur);
+                                humiChart.data.datasets[0].data.push(row.humidity);
+                                illuChart.data.datasets[0].data.push(row.illumination);
+                                
+                                tempChart.update(0);
+                                humiChart.update(0);
+                                illuChart.update(0);
                         });
                 }
         }
