@@ -1,28 +1,28 @@
-#include "TSL256x_Def.h"
-#include "TSL256x.h"
+#include "TSL2561_Def.h"
+#include "TSL2561.h"
 #include <math.h>
 
-TSL256x::TSL256x(uint8_t address) 
+TSL2561::TSL2561(uint8_t address) 
 	: I2CBase(address)
 {
 	setDefault();
 }
 
-TSL256x::TSL256x(uint8_t address, int sda, int scl) 
+TSL2561::TSL2561(uint8_t address, int sda, int scl) 
 	: I2CBase(address, sda, scl)
 {
 	setDefault();
 }
 
-TSL256x::TSL256x(uint8_t address, int sda, int scl, uint32_t clock) 
+TSL2561::TSL2561(uint8_t address, int sda, int scl, uint32_t clock) 
 	: I2CBase(address, sda, scl, clock)
 {
 	setDefault();
 }
 
-TSL256x::~TSL256x() {}
+TSL2561::~TSL2561() {}
 
-bool TSL256x::init()
+bool TSL2561::init()
 {
 	uint8_t id;
 	if (!readByte(COMMAND_BIT | REGISTER::ID, id))
@@ -68,7 +68,7 @@ bool TSL256x::init()
 	return true;
 }
 
-bool TSL256x::turnOn()
+bool TSL2561::turnOn()
 {
 	if (writeByte(COMMAND_BIT | REGISTER::CONTROL, POWER_UP))
 	{
@@ -82,7 +82,7 @@ bool TSL256x::turnOn()
 	}
 }
 
-bool TSL256x::turnOff()
+bool TSL2561::turnOff()
 {
 	if (writeByte(COMMAND_BIT | REGISTER::CONTROL, POWER_DOWN))
 	{
@@ -96,7 +96,7 @@ bool TSL256x::turnOff()
 	}
 }
 
-bool TSL256x::setIntegrationTime(uint8_t integrationTime)
+bool TSL2561::setIntegrationTime(uint8_t integrationTime)
 {
 	if (!initialized || !powered)
 	{
@@ -116,7 +116,7 @@ bool TSL256x::setIntegrationTime(uint8_t integrationTime)
 	}
 }
 
-bool TSL256x::setGain(uint8_t integrationGain)
+bool TSL2561::setGain(uint8_t integrationGain)
 {
 	if (!initialized || !powered)
 	{
@@ -136,42 +136,42 @@ bool TSL256x::setGain(uint8_t integrationGain)
 	}
 }
 
-int TSL256x::getPartNumber()
+int TSL2561::getPartNumber()
 {
 	return (int)partNr;
 }
 
-int TSL256x::getRevisionNumber()
+int TSL2561::getRevisionNumber()
 {
 	return (int)revNr;
 }
 
-const char* TSL256x::getDeviceName()
+const char* TSL2561::getDeviceName()
 {
 	return deviceName.c_str();
 }
 
-const char* TSL256x::getPackageName()
+const char* TSL2561::getPackageName()
 {
 	return packageName.c_str();
 }
 
-const char* TSL256x::getErrorMsg()
+const char* TSL2561::getErrorMsg()
 {
 	return errorMsg.c_str();
 }
 
-bool TSL256x::isInitialized()
+bool TSL2561::isInitialized()
 {
 	return initialized;
 }
 
-bool TSL256x::isPowered()
+bool TSL2561::isPowered()
 {
 	return powered;
 }
 
-bool TSL256x::getLux(uint16_t& lux)
+bool TSL2561::getLux(uint16_t& lux)
 {
 	if (initialized && powered)
 	{
@@ -188,7 +188,7 @@ bool TSL256x::getLux(uint16_t& lux)
 	}
 }
 
-bool TSL256x::getLux(float& lux)
+bool TSL2561::getLux(float& lux)
 {
 	if (initialized && powered)
 	{
@@ -207,7 +207,7 @@ bool TSL256x::getLux(float& lux)
 
 /* Private Methods */
 
-void TSL256x::setDefault()
+void TSL2561::setDefault()
 {
 	initialized = false;
 	powered = false;
@@ -215,7 +215,7 @@ void TSL256x::setDefault()
 	activeGain = INTEGRATION_GAIN::LOW1X;
 }
 
-void TSL256x::waitForCycle()
+void TSL2561::waitForCycle()
 {
 	uint32_t wait = 0;
 	switch (activeIntegrationTime)
@@ -231,7 +231,7 @@ void TSL256x::waitForCycle()
 	delay(wait);
 }
 
-bool TSL256x::getChannelData(uint16_t& ch0, uint16_t& ch1)
+bool TSL2561::getChannelData(uint16_t& ch0, uint16_t& ch1)
 {
 	if (!readWord(COMMAND_BIT | WORD_BIT | (uint8_t)REGISTER::DATA_CHANNEL_0_LOW, ch0)) 
 	{
@@ -246,7 +246,7 @@ bool TSL256x::getChannelData(uint16_t& ch0, uint16_t& ch1)
 	return true;
 }
 
-uint16_t TSL256x::calculateLux(uint16_t& ch0, uint16_t& ch1)
+uint16_t TSL2561::calculateLux(uint16_t& ch0, uint16_t& ch1)
 {
 	unsigned long chScale = 0;
 	unsigned long channel1 = 0;
@@ -367,7 +367,7 @@ uint16_t TSL256x::calculateLux(uint16_t& ch0, uint16_t& ch1)
 	return (uint16_t)value;
 }
 
-float TSL256x::calculateLuxWithFloat(uint16_t& ch0, uint16_t& ch1)
+float TSL2561::calculateLuxWithFloat(uint16_t& ch0, uint16_t& ch1)
 {
 	float lux = 0.0f;
 	float ratio = (float)ch1 / (float)ch0;

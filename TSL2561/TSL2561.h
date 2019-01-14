@@ -1,5 +1,5 @@
-#ifndef TSL256x_H
-#define TSL256x_H
+#ifndef TSL2561_H
+#define TSL2561_H
 
 #include "I2CBase.h"
 
@@ -86,7 +86,7 @@ enum PACKAGE
 	CS		= 0x1
 };
 
-class TSL256x : public I2CBase
+class TSL2561 : public I2CBase
 {
 	private:
 		//Device Status:
@@ -114,10 +114,10 @@ class TSL256x : public I2CBase
 
 	
 	public:
-		TSL256x(uint8_t address);
-		TSL256x(uint8_t address, int sda, int scl);
-		TSL256x(uint8_t address, int sda, int scl, uint32_t clock);
-		~TSL256x();
+		TSL2561(uint8_t address);
+		TSL2561(uint8_t address, int sda, int scl);
+		TSL2561(uint8_t address, int sda, int scl, uint32_t clock);
+		~TSL2561();
 		
 		int getPartNumber();
 		int getRevisionNumber();
@@ -140,4 +140,4 @@ class TSL256x : public I2CBase
 		bool getLux(float& lux);
 
 };
-#endif //TSL256x_H
+#endif //TSL2561_H

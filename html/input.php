@@ -11,7 +11,8 @@
 
                         if(isset($_POST['temperatur']) && isset($_POST['humidity']) && isset($_POST['illumination']) )
                         {
-                                //$timestamp = date('Y-m-d H:i:sa');
+                                $timestamp = date('Y-m-d H:i:sa');
+
                                 $temperatur = round(filter_input(INPUT_POST,'temperatur',FILTER_SANITIZE_STRING),2);
                                 $humidity = round(filter_input(INPUT_POST,'humidity',FILTER_SANITIZE_STRING), 2);
                                 $illumination = round(filter_input(INPUT_POST,'illumination',FILTER_SANITIZE_STRING), 2);
@@ -28,10 +29,10 @@
                                         //echo "Yes, we are connected\n";
                                         try {
                                                 //$db->enableExceptions(true);
-                                                $sql = 'INSERT INTO data (temperatur,humidity,illumination) values(:temp,:humi,:illu)';
+                                                $sql = 'INSERT INTO data (temperatur,humidity,illumination) values(:times,:temp,:humi,:illu)';
                                                 //echo $sql . '\n';
                                                 $statement = $db->prepare($sql);
-                                                
+                                                $statement->bindValue( ':times', $timestamp, SQLITE3_DATETIME );
                                                 $statement->bindValue(':temp', $temperatur, SQLITE3_FLOAT);
                                                 $statement->bindValue(':humi', $humidity, SQLITE3_FLOAT);
                                                 $statement->bindValue(':illu', $illumination, SQLITE3_FLOAT);

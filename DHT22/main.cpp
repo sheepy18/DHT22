@@ -9,7 +9,7 @@
 //END ESP8266
 
 #include <dht22.h>
-#include <TSL256x.h>
+#include <TSL2561.h>
 
 #define SSID "NameOfNetwork"
 #define SECURITY_KEY "AardvarkBadgerHedgehog"
@@ -30,7 +30,7 @@ using namespace sensors;
 
 float humidity;
 float temperatur;
-float illumination;
+uint16_t illumination;
 int hasReadData;
 
 ESP8266WiFiMulti WiFiMulti;
@@ -65,7 +65,7 @@ void setupDHT()
 void setupTSL()
 {
   Serial.println("SETUP TSL");
-  illumination = 0.0f;
+  illumination = 0;
   if(tsl2561.init())
   {
     Serial.printf("Part Number = %d\n", tsl2561.getPartNumber());

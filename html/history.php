@@ -188,7 +188,7 @@ function requestWeatherData() {
                                 tempChart.data.datasets[0].data.push(row.temperatur);
                                 humiChart.data.datasets[0].data.push(row.humidity);
                                 illuChart.data.datasets[0].data.push(row.illumination);
-                                
+
                                 tempChart.update(0);
                                 humiChart.update(0);
                                 illuChart.update(0);
