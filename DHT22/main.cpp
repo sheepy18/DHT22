@@ -35,7 +35,7 @@ int hasReadData;
 
 ESP8266WiFiMulti WiFiMulti;
 DHT22 dht(DHTPIN);
-TSL256x tsl2561(ADDRESS, SDA, SCL);
+TSL2561 tsl2561(ADDRESS, SDA, SCL);
 
 
 void setupWiFi()
