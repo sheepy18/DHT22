@@ -167,10 +167,7 @@ void setup() {
   hasReadData = 0;
 
   readWeatherData();
-  if(hasReadData == 1)
-  {
-    sendWeatherData();  
-  }
+  sendWeatherData();  
   
   Serial.println(dht.getErrorMsg());
   Serial.println("Going into deep sleep for 10 minutes");
