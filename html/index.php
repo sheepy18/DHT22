@@ -30,7 +30,8 @@
                         weatherDataArray.forEach(function (row) {
                             var tempDiv = document.createElement("div");
                             tempDiv.setAttribute("id", "data")
-                            tempDiv.innerHTML = "<h2>" + row.temperatur + "&deg;C</h2>";
+                            tempDiv.innerHTML = "<h2>" + row.timestamp + "</h2>";
+                            tempDiv.innerHTML += "<h2>" + row.temperatur + "&deg;C</h2>";
                             tempDiv.innerHTML += "<h2> " + row.humidity + " %</h2>";
                             tempDiv.innerHTML += "<h2> " + row.illumination + " lx</h2>";
 
@@ -51,8 +52,8 @@
                         const weatherDataArray = JSON.parse(http.responseText);
                         weatherDataArray.forEach(function (row) {
                             var tempDiv = document.getElementById("data");
-
-                            tempDiv.innerHTML = "<h2>" + row.temperatur + "&deg;C</h2>";
+                            tempDiv.innerHTML = "<h2>" + row.timestamp + "</h2>";
+                            tempDiv.innerHTML += "<h2>" + row.temperatur + "&deg;C</h2>";
                             tempDiv.innerHTML += "<h2> " + row.humidity + " %</h2>";
                             tempDiv.innerHTML += "<h2> " + row.illumination + " lx</h2>";
                             
