@@ -29,10 +29,10 @@
                                         //echo "Yes, we are connected\n";
                                         try {
                                                 //$db->enableExceptions(true);
-                                                $sql = 'INSERT INTO data (temperatur,humidity,illumination) values(:times,:temp,:humi,:illu)';
+                                                $sql = "INSERT INTO data (timestamp,temperatur,humidity,illumination) values(datetime('now','localtime'),:temp,:humi,:illu)";
                                                 //echo $sql . '\n';
                                                 $statement = $db->prepare($sql);
-                                                $statement->bindValue( ':times', $timestamp, SQLITE3_DATETIME );
+
                                                 $statement->bindValue(':temp', $temperatur, SQLITE3_FLOAT);
                                                 $statement->bindValue(':humi', $humidity, SQLITE3_FLOAT);
                                                 $statement->bindValue(':illu', $illumination, SQLITE3_FLOAT);
