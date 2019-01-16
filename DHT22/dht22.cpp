@@ -67,7 +67,7 @@ namespace sensors
 
   bool DHT22::startCommunication()
   {
-    //wait 2 milisec on low voltage as a startsignal 
+    //wait 1 milisec on low voltage as a startsignal 
     digitalWrite( data, LOW );
     delay(1);
     noInterrupts();
@@ -200,7 +200,6 @@ namespace sensors
     if( !set2Input() ) return 3;
     if( !waitForInitalBits() ) return 4 ;
     if( !readDataBits() ) return 5;
-   // if( !readDataBitsAlternative() ) return 5;    
     if( !isCheckSumValid() ) return 6;     
     return 0;
   }
@@ -212,20 +211,6 @@ namespace sensors
     t += (buff[3] / 10.f);
     return t;
   }
-
-  /* old version
-  DHT22::Value DHT22::getHumidity()
-  {
-    float h = 0.f;    
-    h = buff[0];
-    h += (buff[1] / 10.f);
-   // h *= 2;
-    //h += 1;
-
-    //return h;
-    return h; //may be the right solution or a close one, but why?
-  }
-  */
 
   DHT22::Value DHT22::getHumidity()
   {

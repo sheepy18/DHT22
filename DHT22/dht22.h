@@ -37,10 +37,8 @@ namespace sensors
        Value getTemperature();
        Value getHumidity();
        MeasureValues getTempAndHumi();
-
-       Value getHumidity2();
+      //Debug functions
        const char* getErrorMsg(){ return err; }
-
        char readedBits[41];
        
   
